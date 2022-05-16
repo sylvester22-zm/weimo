@@ -22,7 +22,7 @@ const Otp = ({xhr,route,navigation}) => {
   useEffect(()=>{
     console.log(isOtp,"otp state")
   },[])
-   const {itemid,other}=route.params;
+  // const {itemid,other}=route.params;
  console.log(xhr.status,"xhr object Otp")
   var Next=()=>{
      console.log("Otp next button clicked")

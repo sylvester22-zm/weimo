@@ -6,17 +6,20 @@ import {View,Text,StyleSheet,TextInput, Button,StatusBar,
 
 const Number = ({navigation}) => {
     let [username,setUsername]=useState('');
-     let xhr=new XMLHttpRequest();
+   var   xhr=new XMLHttpRequest();
 
-   
-    nextButton=()=>{
-        if(username)
+     var nextButton=()=>{
+        console.log("username",username)
+       
         xhr.onreadystatechange=(e)=>{
+            console.log(xhr)
             if (xhr.readyState !== 4) {
+               
                 return;
               }
               if(xhr.readyState==XMLHttpRequest.DONE){
-               if(xhr.status===200){         
+               if(xhr.status===200){  
+                 navigation.navigate('Otp')       
               console.log("OTP has been Sent")
               }
             }
@@ -24,27 +27,36 @@ const Number = ({navigation}) => {
              console.log("something happened")
             }
            
-        
+          }
  xhr.open('POST','http://10.0.2.2:8080/OtpApi',true)
  // xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded')
 xhr.setRequestHeader('Content-type','application/json')
   xhr.setRequestHeader("X-Requested-With","XMLHttpRequest") 
  xhr.send(JSON.stringify(username)) 
   
-        }
-} 
+        
 
+    } 
  
-   /*  var nextButton=()=>{
+     /* var nextButton=()=>{
         console.log("next button pressed")
-        navigation.navigate('Otp')
-    } */
-    var countries=['zmb','ind','usa','uk','zim']
-    var countryCode=()=>{
-
-      console.log('code pressed')
-    }
+        xhr.onreadystatechange = (e) => {
+            if (xhr.readyState !== 4) {
+              return;
+            }
+          
+            if (xhr.status === 200) {
+              console.log('success', xhr.responseText);
+            } else {
+              console.warn('error');
+            }
+          };
+          
+          xhr.open('POST', 'http://10.0.2.2:8080/OtpApi');
+          xhr.send();
+    }  */
    
+    
     var nextPage=()=>{
         navigation.navigate('Otp',{itedid:86,other:"hayyy"})
     }
