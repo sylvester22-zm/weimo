@@ -2,6 +2,7 @@
 
 
 import React, {useRef,useEffect, useState} from 'react';
+import NetInfo from "@react-native-community/netinfo"
 import {
   View,
   Text,
@@ -19,27 +20,49 @@ const Otp = ({xhr,route,navigation}) => {
   const fourthInput = useRef();
   const [otp, setOtp] = useState();
   var [isOtp,setRequest]=React.useState(false);
+  var [connected,setConnected]=React.useState(false);
   useEffect(()=>{
     console.log(isOtp,"otp state")
   },[])
   // const {itemid,other}=route.params;
- console.log(xhr.status,"xhr object Otp")
+ 
+/* useEffect(()=>{
+  const unsubscribe = NetInfo.addEventListener(state => {
+    setConnected(state.isConnected);
+    console.log("otp Connection type", state.type);
+    console.log("otp Is connected?", state.isConnected);
+  });
+},[connected]) */
+
+  NetInfo.fetch().then(state => {
+    console.log("Connection type fetch", state.type);
+    console.log("Is connected?", state.isConnected);
+    setConnected(state.isConnected)
+  });
+
+
+
+
   var Next=()=>{
-     console.log("Otp next button clicked")
+     console.log("Otp next button clicked",xhr.status,connected)
      var password=otp.a+otp.b+otp.c+otp.d
      var email="";
      var json={
        password:password,
        email:email
      }
-   
+    if(connected){
   xhr.open('POST','http://10.0.2.2:8080/OtpValidator',true)
   // xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded')
 xhr.setRequestHeader('Content-type','application/json')
    xhr.setRequestHeader("X-Requested-With","XMLHttpRequest") 
   xhr.send(JSON.stringify(json))
- 
-  }
+    }else{
+      console.error("check your connection",connected)
+      xhr.abort();
+      
+    }
+        }
   
  var nexHome=()=>{
    navigation.navigate('Home')

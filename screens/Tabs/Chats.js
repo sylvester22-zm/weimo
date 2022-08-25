@@ -4,30 +4,128 @@ import {View,Text,Button,Image,StyleSheet,
   TouchableOpacity,FlatList} from 'react-native'
 import {useState,useEffect} from 'react'
 
-const Chats = ({navigation}) => {
+var damydata=[{'id':1,'message':'hay'},{'id':2,'message':'lata'}]
+var pay=[{'id':2,'message':'newmessage'}]
+var newarray={}
+
+
+const Chats = ({data,payload,navigation}) => {
+  var [data,setData]=React.useState([])
+  let contact={};
+  let number;
+
+ useEffect(()=>{
+  
+  let updated;
+  let prev;
+  
+    data.forEach((d,ic)=>{
     
-  var chatWith=(withUser)=>{
-    console.log("pressed",withUser)
-    navigation.navigate('Inbox',{withUser:withUser})
+      if(d.id===payload.id){
+        console.log(d,"data inbox")
+        newarray=data.splice(d,1)
+        var sliced=[];
+        // console.log(d,"b4 shift",newarray)
+       // newarray.unshift(payload)
+       newarray.unshift(payload)
+       console.log("new array ins",newarray)
+  
+        //newarray=data.splice(d,d.id)
+      
+        console.log("sliced is ins",sliced)
+        setData(sliced)
+      }
+  
+    
+   })  
+   console.log("new array out",newarray)
+  // const unique=[...new Map(data.map((item,key)=>[item[key],item])).values()]
+   //setData(unique)
+  
+ },[payload])
+ 
+ console.log("payload out",payload.id)
+  var chatWith=(contact)=>{
+    console.log("initial",contact)
+    contact={'toUser':contact.toUser,'phone':[{'number':contact.toNumber,'id':contact.other}]};
+    console.log("contact",contact)
+    navigation.navigate('Inbox',contact)
 
   }
+  var fromUser=(contact)=>{
+    contact={'toUser':contact.toUser,'phone':[{'number':contact.fromNumber,'id':contact.other}]};
+     console.log(contact,"inbox")
+     navigation.navigate('Inbox',contact)
+  }
 
-   var users=[
-    {  "id": 1,  "username": "Bret",  "phone": "1-770-736-8031 x56442", },
-    { "id": 2,"username": "Antonette",     "phone": "010-692-6593 x09125",  },
-    {   "id": 4,   "username": "Karianne",   "phone": "493-170-9623 x156",},
-    {   "id": 5,   "username": "Kamren",   "phone": "(254)954-1289", },
-    {  "id": 6,  "username": "Leopoldo_Corkery",  "phone": "1-477-935-8478 x6430" },
-    {  "id": 7,  "username": "Elwyn.Skiles",   "phone": "210.067.6132", },
-    {  "id": 8,  "username": "Maxime_Nienow",  "phone": "586.493.6943 x140", },
-    {  "id": 9,  "username": "Delphine",  "phone": "(775)976-6794 x41206",  },
-    {  "id": 10,  "username": "Moriah.Stanton",
-      "phone": "024-648-3804",
-    }
-  ]
-  var these='';
+  var request = new XMLHttpRequest();
+  useEffect(()=>{
+
+    request.onreadystatechange = (e) => {
+      if (request.readyState !== 4) {
+        return;
+      }
+     
+      if (request.status === 200) {
+     
+        var cons=JSON.parse(request.response)   
+        setData(cons)
+        
+      } else {
+        console.warn('error chats');
+      }
+    };
+    
+    request.open('POST', 'http://10.0.2.2:8080/myconversations',true);
+    request.send();
+        
+  },[])
+  
+
+   
+
+
  
-   console.log(users,"data")
+   var renderItem=({item})=>(
+    
+           
+    <View  style={styles.chatView} key={item.id}>
+    {item.sender?(<View>     
+    <TouchableOpacity  onPress={()=>{chatWith(item)
+    }
+  
+  }>  
+    <View style={styles.userList}  >    
+      <Image style={styles.image}
+         source={require('./pic.png')}></Image>
+         {item.toUser?<Text style={styles.user}>{item.toUser}</Text>:
+         <Text style={styles.user}>{item.toNumber}</Text>}
+         <Text style={styles.message}>{item.message}...</Text>
+         <Text style={styles.lastText}>{item.localDatetime}me</Text>
+         {/* <Text style={styles.unseen}>{item.unseen}</Text> */}
+        </View>   
+        </TouchableOpacity>
+  </View>):
+  (         
+            <View>     
+            <TouchableOpacity  onPress={()=>{fromUser(item)}}>  
+            <View style={styles.userList}  >    
+              <Image style={styles.image}
+                 source={require('./pic.png')}></Image>
+                 {item.fromUser?<Text style={styles.user}>{item.fromUser}</Text>:
+                 <Text style={styles.user}>{item.fromNumber}</Text>}
+                 <Text style={styles.message}>{item.message}...</Text>
+                 <Text style={styles.lastText}>{item.localDatetime}ww</Text>
+                 <Text style={styles.unseen}>{item.unseen}</Text>
+                </View>   
+                </TouchableOpacity>
+          </View>)}
+  </View>
+   
+   )
+ 
+   
+   
 
 
   return (
@@ -36,17 +134,8 @@ const Chats = ({navigation}) => {
      <View style={styles.secView}>
    
       <FlatList 
-      data={users} renderItem={({item})=>(
-        <TouchableOpacity  onPress={()=>{chatWith(item.username)}}>
-        <View style={styles.userList}>
-          <Image  style={styles.image}
-           source={require('./pic.png')}></Image> 
-          <Text style={styles.user}> {item.username}</Text>
-          <Text style={styles.message}>The message sen...</Text>
-          <Text style={styles.lastText}>Last texted</Text>
-            </View>
-            </TouchableOpacity>
-      )}/>
+      data={[...data].reverse()} inverted={0} renderItem={renderItem} extraData={data}
+     />
      </View>
    </View>
   )
@@ -68,7 +157,7 @@ const styles=StyleSheet.create({
       paddingTop:13,
       color:'white',
       position:'absolute',
-      marginLeft:255
+      marginLeft:'75%'
     },
     image:{
       height:60,
@@ -81,6 +170,12 @@ const styles=StyleSheet.create({
       paddingTop:43,
       position:'absolute',
       paddingLeft:88
+    },
+    unseen:{
+      top:'60%',
+      color:'black',
+      position:'absolute',
+      marginLeft:'75%'
     },
     user:{
       height:60,

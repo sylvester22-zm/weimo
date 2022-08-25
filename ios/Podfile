@@ -21,6 +21,8 @@ target 'weimo' do
 
   pod 'react-native-contacts', :path => '../node_modules/react-native-contacts'
 
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
   target 'weimoTests' do
     inherit! :complete
     # Pods for testing

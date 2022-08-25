@@ -60,14 +60,21 @@ xhr.setRequestHeader('Content-type','application/json')
     var nextPage=()=>{
         navigation.navigate('Otp',{itedid:86,other:"hayyy"})
     }
-    
+   
   return (
    <View style={styles.main}>
         
        <Text style={styles.text} >Enter Your Phone Number To Proceed </Text>
        <View style={styles.container}>
            <Text>{username}</Text>
-           <TextInput value={username} onChangeText={username=>setUsername(username)} style={styles.mobileNum} keyboardType='email-address' placeholder='mobile number' />
+           
+           <TextInput value={username} onTouchStart={()=>{
+             alert("just press")
+           }} onChangeText={username=>setUsername(username)}
+            style={styles.mobileNum} keyboardType='email-address' 
+            placeholder='mobile number' />
+           
+          
            <Button color='black' onPress={nextButton} style={styles.nextButton} title='Next'></Button>
        </View>
         <Button title="NextPage" onPress={nextPage} ></Button> 

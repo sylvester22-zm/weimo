@@ -1,11 +1,12 @@
 
 import React, {useEffect, useState} from 'react'
-import Contacts from 'react-native-contacts';
+import Contacts, { getContactsByPhoneNumber } from 'react-native-contacts';
 import {FlatList,View,Text,StyleSheet,Image,TextInput
   ,TouchableOpacity} from 'react-native'
 
 const ContactList = ({navigation}) => {
   var [contacts,setContacts]=React.useState([])
+  var contact={};
   
   useEffect(() => {
     Contacts.getAll().then(contacts => {
@@ -14,6 +15,45 @@ const ContactList = ({navigation}) => {
     });
   }, []);
   
+  //console.log(phoneNumbers,"numbers")
+ // console.log(contacts,"hello there")
+  //second function for numbers
+   /// console.log( "object contact",contacts)
+ 
+  var renderItem=({item})=>{ 
+    console.log("item obs",item.phoneNumbers,"name",item.displayName)
+    return(
+      <View>
+    <TouchableOpacity onPress={()=>{
+      //console.log("contactonclick",item.givenName,"++",item.phoneNumbers)
+      contact={'toUser':item.displayName,'phone':item.phoneNumbers};
+      
+     navigation.navigate('Inbox',contact)
+     }}>
+     
+<View style={styles.row}>
+<Image  style={styles.pic} source={require('./pic.png')}/>
+<View>
+<View style={styles.nameContainer}>
+  <View key={contact.id}>
+        {item.displayName?<Text style={styles.nameTxt} numberOfLines={1} ellipsizeMode="tail">{item.displayName}</Text>:
+      <Text>{item.phoneNumbers}</Text>}
+    </View>
+</View>
+<View style={styles.msgContainer}>
+<Text style={styles.msgTxt}>phone short-Bio</Text>
+</View>
+</View>
+</View>     
+  </TouchableOpacity>
+  </View>   
+ 
+  )
+{/* <FlatList data={item.phoneNumbers}  renderItem={secItem} extraData={item.phoneNumbers}/> */} 
+ 
+}
+  
+  
   return (
       <View style={styles.container}>
            <View style={styles.searchbar}>
@@ -21,24 +61,7 @@ const ContactList = ({navigation}) => {
 
            </View>
          <View style={styles.secView}>
-          <FlatList  data={contacts} renderItem={({item})=>(
-         <TouchableOpacity onPress={()=>{
-           navigation.navigate('Inbox',{'withUser':item.displayName})
-         }}>
-        <View style={styles.row}>
-          <Image  style={styles.pic} source={require('./pic.png')}/>
-          <View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.nameTxt} numberOfLines={1} ellipsizeMode="tail">{item.displayName}</Text>
-{/*<Text style={styles.mblTxt}>Mobile</Text>*/}
-            </View>
-            <View style={styles.msgContainer}>
-              <Text style={styles.msgTxt}>short-Bio</Text>
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-      )}/>
+          <FlatList  data={contacts} renderItem={renderItem} extraData={contacts}/>
   </View>
  
      </View> 

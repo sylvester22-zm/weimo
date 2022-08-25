@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React,{useEffect,useState} from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {createNativeStackNavigator }    from '@react-navigation/native-stack';
@@ -11,9 +11,23 @@ import Settings from './Tabs/Settings';
 import Contacts from 'react-native-contacts';
 import { PermissionsAndroid } from 'react-native';
 
-  var Home=({navigation})=> {
-    //console.log(PermissionsAndroid,"permi",)
+  var Home=({data,payload,navigation})=> { 
     
+/* 
+    console.log("Home invoked",)
+    useEffect(()=>{
+           console.log()
+    xhr.open('POST','http://10.0.2.2:8080/conversations',true)
+    // xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded')
+   xhr.setRequestHeader('Content-type','application/json')
+     xhr.setRequestHeader("X-Requested-With","XMLHttpRequest") 
+    xhr.send()
+    },[data])
+    console.log("Home inside data",data); */
+  
+//console.log("Home data",data)
+//console.log("Home payload",payload)
+  
 PermissionsAndroid.request(
   PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
   {
@@ -50,7 +64,7 @@ PermissionsAndroid.request(
      
     }}>
       
-    <Tabs.Screen options={{
+    {/* <Tabs.Screen options={{
       tabBarLabel:'Feeds',
      tabBarLabelStyle:{
       fontSize:10,
@@ -65,7 +79,7 @@ PermissionsAndroid.request(
      headerShown:false
      
     }} name="Feeds"  component={Feeds}
-  />
+  /> */}
     <Tabs.Screen 
      options={{
       tabBarLabel:'Chats',
@@ -81,7 +95,10 @@ PermissionsAndroid.request(
         },
         headerShown:false
       }}
-    name="Chats" component={Chats} />
+    name="Chats">
+      {props=><Chats {...props} data={data} payload={payload}/>}
+     
+     </Tabs.Screen>
     <Tabs.Screen 
      options={{
       tabBarLabel:'Contacts',
@@ -122,7 +139,7 @@ PermissionsAndroid.request(
 const styles=StyleSheet.create({
   
   container:{
-   margin:5,
+   margin:1,
    flex:1,
    
   },
